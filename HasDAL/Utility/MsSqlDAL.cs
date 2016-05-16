@@ -25,7 +25,7 @@ namespace HasDAL.Utility
         }
 
         public override DataTable ExecuteDataTable(string sql, System.Collections.IEnumerable parameters)
-        {
+        { 
             Console.WriteLine(_name + "\nExecuteDataTable Executed");
             return null;
         }
