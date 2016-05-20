@@ -11,11 +11,11 @@ namespace HasDAL.Utility
     {
 		private const byte DEFAULT_DBMS = (byte)DalTypes.Oracle;
 
-        private static Dictionary<byte, Type> _dalList = new Dictionary<byte, Type>() { 
-            {(byte)DalTypes.Oracle,typeof(OracleDAL)},
-            {(byte)DalTypes.MsSql,typeof(MsSqlDAL)},
-            {(byte)DalTypes.MySql,typeof(MySqlDAL)},
-            {(byte)DalTypes.NoSql,typeof(NoSqlDAL)}
+        private static Dictionary<byte, Func<IDal>> _dalList = new Dictionary<byte, Func<IDal>>() { 
+            {(byte)DalTypes.Oracle,()=>new OracleDAL()},
+            {(byte)DalTypes.MsSql,()=> new MsSqlDAL()},
+            {(byte)DalTypes.MySql,()=>new MySqlDAL()},
+            {(byte)DalTypes.NoSql,()=>new NoSqlDAL()}
         }; 
        private static volatile IDal instance;
        private static object syncRoot = new Object();
@@ -34,8 +34,7 @@ namespace HasDAL.Utility
                     {
 						byte keyDal = DEFAULT_DBMS;
 						byte.TryParse(ConfigurationManager.AppSettings["DalType"].ToString(),out keyDal);
-                        var dalType = _dalList[keyDal];
-                        instance = (IDal)Activator.CreateInstance(dalType);
+                        instance = _dalList[keyDal]();
                     }
                 }
              }
